@@ -28,9 +28,9 @@ function App() {
   }
 
   
-  //map through the array and render an instance of the Dice component
+  //map through the array and render instances of the Dice component
   let rolledDice = numbersArray.map((num) => {
-    return <Dice key={num.id} value={num.value} />
+    return <Dice key={num.id} value={num.value} isHeld={num.isHeld}/>
   })
   
   
