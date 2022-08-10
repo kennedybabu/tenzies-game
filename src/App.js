@@ -1,22 +1,28 @@
+import React, { useEffect , useState} from "react";
 import Dice from "./components/Dice";
 
 
-
 function App() {
+
+  const [numbersArray, setNumbersArray] = useState(allNewDice())
+
+  //function that will get random numbers between 1 and 6
   function allNewDice() {
     
     let arr = []
     
-    for(let i = 1; i <= 10; i ++) {
-      let randomNum = Math.floor(Math.random() * 7)
-      if(randomNum === 0) {
-        return randomNum + 1
-      }
+    for(let i = 1; i <= 10; i ++) {     
 
-      arr.push(randomNum)
+      arr.push(Math.ceil(Math.random() * 6))      
     }
-    console.log(arr)
+    return arr
   }
+
+  
+  let rolledDice = numbersArray.map((num, index) => {
+    return <Dice key={index} value={num}/>
+  })
+  
   
   return (
     <div className="h-full w-full flex items-center justify-center">
@@ -25,16 +31,7 @@ function App() {
                 <h1 className="text-[#2b283a] text-[25px] font-bold">Tenzies</h1>
                 <p className="text-[#4a4e74] text-[13px] max-w-[232px]">Roll until all dice are the same. Click each dice to freeze it at its current Value between rolls.</p>
               <div className="w-full h-[100px] px-[34px] grid grid-cols-5 mt-[23px]">                
-                 <Dice value={1}/>
-                 <Dice value={3}/>
-                 <Dice value={1}/>
-                 <Dice value={6}/>
-                 <Dice value={3}/>
-                 <Dice value={4}/>
-                 <Dice value={2}/>
-                 <Dice value={6}/>
-                 <Dice value={3}/>
-                 <Dice value={1}/>
+                  {rolledDice}
               </div>
               <button onClick={allNewDice} className="w-[92px] h-[35px] bg-[#5035ff] mt-[10px] rounded-[4px] text-[#f5f5f5]">Roll</button>
           </div>
