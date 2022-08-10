@@ -1,5 +1,6 @@
 import React, { useEffect , useState} from "react";
 import Dice from "./components/Dice";
+import {nanoid} from "nanoid"
 
 
 function App() {
@@ -13,14 +14,23 @@ function App() {
     
     for(let i = 1; i <= 10; i ++) {     
 
-      arr.push(Math.ceil(Math.random() * 6))      
+      arr.push({
+        value: Math.ceil(Math.random() * 6),
+        isHeld: false,
+        id: nanoid()
+      })      
     }
     return arr
   }
 
+  function rollDice() {
+    setNumbersArray(allNewDice())
+  }
+
   
-  let rolledDice = numbersArray.map((num, index) => {
-    return <Dice key={index} value={num}/>
+  //map through the array and render an instance of the Dice component
+  let rolledDice = numbersArray.map((num) => {
+    return <Dice key={num.id} value={num.value} />
   })
   
   
@@ -33,7 +43,7 @@ function App() {
               <div className="w-full h-[100px] px-[34px] grid grid-cols-5 mt-[23px]">                
                   {rolledDice}
               </div>
-              <button onClick={allNewDice} className="w-[92px] h-[35px] bg-[#5035ff] mt-[10px] rounded-[4px] text-[#f5f5f5]">Roll</button>
+              <button onClick={rollDice} className="w-[92px] h-[35px] bg-[#5035ff] mt-[10px] rounded-[4px] text-[#f5f5f5]">Roll Dice</button>
           </div>
       </main>
     </div>
