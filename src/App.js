@@ -1,11 +1,34 @@
 import React, { useEffect , useState} from "react";
 import Dice from "./components/Dice";
 import {nanoid} from "nanoid"
+import Confetti from 'react-confetti'
 
 
 function App() {
 
   const [numbersArray, setNumbersArray] = useState(allNewDice())
+
+  const [tenzies, setTenzies] = useState(false)
+
+
+  useEffect(() => {
+      const allHeld = numbersArray.every(num => num.isHeld)
+      const firstValue = numbersArray[0].value
+      const allSameValue = numbersArray.every(num => num.value === firstValue)
+      
+      if(allHeld && allSameValue) {
+        setTenzies(true)
+        console.log('You have won the game')
+      }
+  }, [numbersArray])
+
+  function generateNewDice() {
+    return {
+      value: Math.ceil(Math.random() * 6),
+      isHeld: false,
+      id: nanoid()
+    }
+  }
 
   //function that will get random numbers between 1 and 6
   function allNewDice() {
@@ -14,23 +37,35 @@ function App() {
     
     for(let i = 1; i <= 10; i ++) {     
 
-      arr.push({
-        value: Math.ceil(Math.random() * 6),
-        isHeld: false,
-        id: nanoid()
-      })      
+      arr.push(generateNewDice())      
     }
     return arr
   }
 
   function rollDice() {
-    setNumbersArray(allNewDice())
+    if(!tenzies) {
+      setNumbersArray(oldState => oldState.map(num => {
+        return num.isHeld ? num : generateNewDice()
+      }))
+    } else {
+      setTenzies(false)
+      setNumbersArray(allNewDice())
+    }
+    
   }
 
+
+  //function that holds a dice
+  function holdDice(id) {   
+    setNumbersArray(oldState => oldState.map((num) => {
+      return num.id === id ? {...num, isHeld: !num.isHeld} : num
+    })) 
+   
+  }
   
   //map through the array and render instances of the Dice component
   let rolledDice = numbersArray.map((num) => {
-    return <Dice key={num.id} value={num.value} isHeld={num.isHeld}/>
+    return <Dice key={num.id} value={num.value} isHeld={num.isHeld} holdDice={holdDice} id={num.id}/>
   })
   
   
@@ -43,8 +78,9 @@ function App() {
               <div className="w-full h-[100px] px-[34px] grid grid-cols-5 mt-[23px]">                
                   {rolledDice}
               </div>
-              <button onClick={rollDice} className="w-[92px] h-[35px] bg-[#5035ff] mt-[10px] rounded-[4px] text-[#f5f5f5]">Roll Dice</button>
+              <button onClick={rollDice} className="w-[92px] h-[35px] bg-[#5035ff] mt-[10px] rounded-[4px] text-[#f5f5f5]">{tenzies ?  "New Game" : "Roll"}</button>
           </div>
+          {tenzies ?  <Confetti className="w-[360px] h-[379px]"/> : null}
       </main>
     </div>
    
